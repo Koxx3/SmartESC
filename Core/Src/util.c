@@ -43,7 +43,6 @@ extern int16_t batVoltage;              // global variable for battery voltage
 extern int16_t board_temp_deg_c;
 extern int16_t speedMotor;
 extern int16_t curr_a_cnt_max;
-extern int16_t vbat;
 
 //------------------------------------------------------------------------
 // Global variables set here in util.c
@@ -388,12 +387,6 @@ void poweroffPressCheck(void) {
 	}
 }
 
-void UpperVoltageProtection(void) {
-	if (adc_buffer.vbat >=3600) {
-		enable = 0;
-		HAL_Delay(2000);
-	}
-}
 
 /* =========================== Read Functions =========================== */
 
