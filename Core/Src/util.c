@@ -43,6 +43,7 @@ extern int16_t batVoltage;              // global variable for battery voltage
 extern int16_t board_temp_deg_c;
 extern int16_t speedMotor;
 extern int16_t curr_a_cnt_max;
+extern int16_t vbat;
 
 //------------------------------------------------------------------------
 // Global variables set here in util.c
@@ -354,21 +355,21 @@ void cruiseControl(uint8_t button) {
 /* =========================== Poweroff Functions =========================== */
 
 void poweroff(void) {
-  enable = 0;
-  HAL_GPIO_WritePin(TPS_ENA_GPIO_Port, TPS_ENA_Pin, GPIO_PIN_RESET);
+	enable = 0;
+	HAL_GPIO_WritePin(TPS_ENA_GPIO_Port, TPS_ENA_Pin, GPIO_PIN_RESET);
 	while (1) {
 	}
 }
 
 void poweroffPressCheck(void) {
-    if(HAL_GPIO_ReadPin(PWR_BTN_GPIO_Port, PWR_BTN_Pin)) {
-      enable = 0;
-      uint16_t cnt_press = 0;
-      while(HAL_GPIO_ReadPin(PWR_BTN_GPIO_Port, PWR_BTN_Pin)) {
-        HAL_Delay(10);
-        cnt_press++;
-      }
-      if (cnt_press >= 2 * 100) {                         // Check if press is more than 5 sec
+	if (HAL_GPIO_ReadPin(PWR_BTN_GPIO_Port, PWR_BTN_Pin)) {
+		uint16_t cnt_press = 0;
+		while (HAL_GPIO_ReadPin(PWR_BTN_GPIO_Port, PWR_BTN_Pin)) {
+			HAL_Delay(10);
+			cnt_press++;
+		}
+		if (cnt_press
+				>= 1 * 100) {               // Check if press is more than 2 sec
 #if KX
         HAL_Delay(1000);
         if (HAL_GPIO_ReadPin(PWR_BTN_GPIO_Port, PWR_BTN_Pin)) {  // Double press: Adjust Max Current, Max Speed
@@ -379,10 +380,19 @@ void poweroffPressCheck(void) {
         }
       } else {
 #endif
-    	  // Short press: power off
-        poweroff();
-      }
-    }
+			// Short press: power off
+			enable = 0;
+			HAL_Delay(10);
+			poweroff();
+		}
+	}
+}
+
+void UpperVoltageProtection(void) {
+	if (adc_buffer.vbat >=3600) {
+		enable = 0;
+		HAL_Delay(2000);
+	}
 }
 
 /* =========================== Read Functions =========================== */

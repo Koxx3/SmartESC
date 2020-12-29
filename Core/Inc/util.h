@@ -136,6 +136,9 @@ void mixerFcn(int16_t rtu_speed, int16_t rtu_steer, int16_t *rty_speedL);
 void poweroff(void);
 void poweroffPressCheck(void);
 
+// Upper Voltage Protection
+void UpperVoltageProtection(void);
+
 // Read Functions
 void readInput(void);
 void readCommand(void);
