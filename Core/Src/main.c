@@ -349,6 +349,7 @@ int main(void)
 	    // ####### POWEROFF BY POWER-BUTTON #######
 	    poweroffPressCheck();
 
+
 #if KX
 	    // ####### BEEP AND EMERGENCY POWEROFF #######
 	    if ((TEMP_POWEROFF_ENABLE && board_temp_deg_c >= TEMP_POWEROFF && speedAvgAbs < 20) || (batVoltage < BAT_DEAD && speedAvgAbs < 20)) {  // poweroff before mainboard burns OR low bat 3

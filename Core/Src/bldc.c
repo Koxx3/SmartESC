@@ -44,6 +44,8 @@ ExtY rtY_Motor; /* External outputs */
 int16_t curr_a_cnt_max = 0;
 
 uint32_t counter = 0;
+uint32_t counterLock = 0;
+int16_t enableLock = 0;
 
 // ###############################################################################
 
@@ -55,6 +57,8 @@ static int16_t pwm_margin = 110; // Xiaomi firmware value
 #endif
 
 analog_t analog;
+
+extern TIM_HandleTypeDef htim1;
 
 extern int16_t speedAvgAbs;
 extern uint8_t ctrlModReq;
@@ -187,6 +191,33 @@ void DMA1_Channel1_IRQHandler(void) {
 		filtLowPass32(adc_buffer.vbat, BAT_FILT_COEF, &batVoltageFixdt);
 		batVoltage = (int16_t) (batVoltageFixdt >> 16); // convert fixed-point to integer
 	}
+	// Upper Voltage Cut Protection
+	if ((adc_buffer.vbat >= BAT_MAX_VOLTAGE) && (!enableLock)) {
+		enable = 0;
+		enableLock = 1;
+
+		HAL_TIM_PWM_Stop(&htim1, TIM_CHANNEL_1);
+		HAL_TIM_PWM_Stop(&htim1, TIM_CHANNEL_2);
+		HAL_TIM_PWM_Stop(&htim1, TIM_CHANNEL_3);
+
+		HAL_TIMEx_PWMN_Stop(&htim1, TIM_CHANNEL_1);
+		HAL_TIMEx_PWMN_Stop(&htim1, TIM_CHANNEL_2);
+		HAL_TIMEx_PWMN_Stop(&htim1, TIM_CHANNEL_3);
+		counter = 0;
+		counterLock = counter;
+	} else if ((adc_buffer.vbat < (int16_t) BAT_MAX_VOLTAGE) && (enableLock) && (speedAvgAbs <= 25)) {
+		enable = 1;
+		enableLock = 0;
+
+		HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_1);
+		HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_2);
+		HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_3);
+
+		HAL_TIMEx_PWMN_Start(&htim1, TIM_CHANNEL_1);
+		HAL_TIMEx_PWMN_Start(&htim1, TIM_CHANNEL_2);
+		HAL_TIMEx_PWMN_Start(&htim1, TIM_CHANNEL_3);
+		counterLock = 0;
+	}
 
 #if BLDC_CURRENT_LIMIT
 	// Disable PWM when current limit is reached (current chopping)
@@ -218,7 +249,7 @@ void DMA1_Channel1_IRQHandler(void) {
 #endif
 
 	/* Make sure to stop BOTH motors in case of an error */
-	enableFin = enable && !rtY_Motor.z_errCode;
+	enableFin = enable && !rtY_Motor.z_errCode && !enableLock;
 
 	// ========================= LEFT MOTOR ============================
 	// Get hall sensors values
@@ -249,14 +280,16 @@ void DMA1_Channel1_IRQHandler(void) {
 
 #if BLDC_ENABLE_LOOP
 
-	/* Apply commands */
-	TIM1->CCR1 = (uint16_t) CLAMP(ul + pwm_res / 2, pwm_margin,
-			pwm_res - pwm_margin);
-	TIM1->CCR2 = (uint16_t) CLAMP(vl + pwm_res / 2, pwm_margin,
-			pwm_res - pwm_margin);
-	TIM1->CCR3 = (uint16_t) CLAMP(wl + pwm_res / 2, pwm_margin,
-			pwm_res - pwm_margin);
+	if (!enableLock) {
 
+		/* Apply commands */
+		TIM1->CCR1 = (uint16_t) CLAMP(ul + pwm_res / 2, pwm_margin,
+				pwm_res - pwm_margin);
+		TIM1->CCR2 = (uint16_t) CLAMP(vl + pwm_res / 2, pwm_margin,
+				pwm_res - pwm_margin);
+		TIM1->CCR3 = (uint16_t) CLAMP(wl + pwm_res / 2, pwm_margin,
+				pwm_res - pwm_margin);
+	}
 #endif
 
 #if DEBUG_LED == BLDC_DMA
