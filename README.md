@@ -20,7 +20,7 @@ some copy are very good, and some are bad
 the bad copy have poor mosfets, poor aluminum heatskin but the pcb is OK 
 good copy exist only on 1.4 Rev have all good but probably not exist today
   - Rev 1.4 have 60v regulator (maximum absolute) can be use to 12S battery pack maximum safety 
-  - Rev 2.1 have 90v regulator (maximum absolute) can be use to 19S battery pack maximum safety 
+  - Rev 2.1 have 90v regulator (maximum absolute, 84V real) can be use to 19S battery pack maximum safety 
   - Rev 3.0 is exactly the same with 2.1 but design is more stronger for current than 2.1 & 1.4
 - stock Voltage sending limited to 54v by divided bridge resistor, but 150v tolérant 
 - stock Current reading to ~ +/- 100A per negative phase*
@@ -46,10 +46,12 @@ good copy exist only on 1.4 Rev have all good but probably not exist today
   - [X] in commutation mode
   - [X] in sine mode
   - [X] in FOC mode (speed, voltage & FOC)
-- [X] Controller the motor with serial link
-- [X] Create a new serial link with all data
+- [X] Controller the motor with serial link (display / SmartController)
+  - [X] Create a new serial link with all data
+  - [X] Full-duplex
+  - [ ] Half-duplex
 - [X] Modes for speed limits
-  - [ ] configurable speed limits
+  - [X] configurable speed limits
 - [X] Control from the [SmartDisplay](https://github.com/Koxx3/SmartController_SmartDisplay)
 - [X] Process soft electric braking
   - [ ] configurable electric braking force
@@ -108,9 +110,7 @@ To build and flash, you need to use STM32CubeIDE.
 
 # Original hoverboard-firmware-hack-FOC informations
 
-[![Build Status](https://travis-ci.com/EmanuelFeru/hoverboard-firmware-hack-FOC.svg?branch=master)](https://travis-ci.com/EmanuelFeru/hoverboard-firmware-hack-FOC)
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
-[![paypal](https://www.paypalobjects.com/en_US/i/btn/btn_donate_SM.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=CU2SWN2XV9SCY&currency_code=EUR&source=url)
 
 This repository implements Field Oriented Control (FOC) for stock hoverboards. Compared to the commutation method, this new FOC control method offers superior performance featuring:
  - reduced noise and vibrations 	
