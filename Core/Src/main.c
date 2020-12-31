@@ -152,7 +152,7 @@ int32_t board_temp_adcFixdt; // Fixed-point filter output initialized with curre
 int16_t board_temp_adcFilt;
 int16_t board_temp_deg_c;
 
-#define ADC_OFFSET_READ 580
+#define ADC_OFFSET_READ 560
 uint32_t tim2_ccr2 = ADC_OFFSET_READ;
 uint32_t old_tim2_ccr2 = ADC_OFFSET_READ;
 

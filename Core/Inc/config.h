@@ -14,7 +14,7 @@
 #define DEAD_TIME              48     // PWM deadtime
 #define DELAY_IN_MAIN_LOOP      5     // in ms. default 5. it is independent of all the timing critical stuff. do not touch if you do not know what you are doing.
 #define TIMEOUT                20     // number of wrong / missing input commands before emergency off
-#define A2BIT_CONV             19     // A to bit for current conversion on ADC. Example: 1 A = 50, 2 A = 100, etc
+#define A2BIT_CONV             19     //(Default 19) A to bit for current conversion on ADC. Example: 1 A = 50, 2 A = 100, etc
 //96 RAW = 5A
 
 // ADC conversion time definitions
@@ -118,18 +118,18 @@
 #define TRQ_MODE        3               // [-] TORQUE mode
 
 // Control selections
-#define CTRL_TYP_SEL    FOC_CTRL        // [-] Control type selection: COM_CTRL, SIN_CTRL, FOC_CTRL (default)
+#define CTRL_TYP_SEL    SIN_CTRL        // [-] Control type selection: COM_CTRL, SIN_CTRL, FOC_CTRL (default)
 #define CTRL_MOD_REQ    TRQ_MODE        // [-] Control mode request: OPEN_MODE, VLT_MODE (default), SPD_MODE, TRQ_MODE. Note: SPD_MODE and TRQ_MODE are only available for CTRL_FOC!
 #define DIAG_ENA        1               // [-] Motor Diagnostics enable flag: 0 = Disabled, 1 = Enabled (default)
 
 // Limitation settings
 #define I_MOT_MAX       80              // [A] Maximum single motor current limit
-#define I_DC_MAX        50              // [A] Maximum stage2 DC Link current limit for Commutation and Sinusoidal types (This is the final current protection. Above this value, current chopping is applied. To avoid this make sure that I_DC_MAX = I_MOT_MAX + 2A)
+#define I_DC_MAX        1000              // [A] Maximum stage2 DC Link current limit for Commutation and Sinusoidal types (This is the final current protection. Above this value, current chopping is applied. To avoid this make sure that I_DC_MAX = I_MOT_MAX + 2A)
 #define N_MOT_MAX       2047            // [rpm] Maximum motor speed limit
 
 // Field Weakening / Phase Advance
-#define FIELD_WEAK_ENA  0               // [-] Field Weakening / Phase Advance enable flag: 0 = Disabled (default), 1 = Enabled
-#define FIELD_WEAK_MAX  3              // [A] Maximum Field Weakening D axis current (only for FOC). Higher current results in higher maximum speed. Up to 10A has been tested using 10" wheels.
+#define FIELD_WEAK_ENA  0             // [-] Field Weakening / Phase Advance enable flag: 0 = Disabled (default), 1 = Enabled
+#define FIELD_WEAK_MAX  10              // [A] Maximum Field Weakening D axis current (only for FOC). Higher current results in higher maximum speed. Up to 10A has been tested using 10" wheels.
 #define PHASE_ADV_MAX   0 //SINE             // [deg] Maximum Phase Advance angle (only for SIN). Higher angle results in higher maximum speed.
 #define FIELD_WEAK_LO   800             // ( 500, 1000] Input target Low threshold for starting Field Weakening / Phase Advance. Do NOT set this higher than 1000.
 #define FIELD_WEAK_HI   1000             // (1000, 1500] Input target High threshold for reaching maximum Field Weakening / Phase Advance. Do NOT set this higher than 1500.
@@ -155,7 +155,7 @@
 #define DEFAULT_RATE                480   // 30.0f [-] lower value == slower rate [0, 32767] = [0.0, 2047.9375]. Do NOT make rate negative (>32767)
 #define DEFAULT_FILTER              6553  // Default for FILTER 0.1f [-] lower value == softer filter [0, 65535] = [0.0 - 1.0].
 #define SPEED_COEFFICIENT   		16384     // 1.0f = 16384 / 1.6f = 26214 / 2.0f = 32767
-#define STEER_COEFFICIENT   		768  // Defualt for STEER_COEFFICIENT 0.5f [-] higher value == stronger. [0, 65535] = [-2.0 - 2.0]. In this case  8192 = 0.5 * 2^14. If you do not want any steering, set it to 0.
+#define STEER_COEFFICIENT   		16384  // Defualt for STEER_COEFFICIENT 0.5f [-] higher value == stronger. [0, 65535] = [-2.0 - 2.0]. In this case  8192 = 0.5 * 2^14. If you do not want any steering, set it to 0.
 
 // Extra functionality
 #define CRUISE_CONTROL_SUPPORT        // [-] Flag to enable Cruise Control support. Activation/Deactivation is done by sideboard button or Brake pedal press.
@@ -165,7 +165,7 @@
 //#define ELECTRIC_BRAKE_THRES  10       // (0, 500) Threshold below at which the electric brake starts engaging.
 
 #define INPUT1_TYPE         1         // 0:Disabled, 1:Normal Pot, 2:Middle Resting Pot, 3:Auto-detect
-#define INPUT1_MIN          -50      // min ADC1-value while poti at minimum-position (0 - 4095)
+#define INPUT1_MIN          -1000      // min ADC1-value while poti at minimum-position (0 - 4095)
 #define INPUT1_MID          0
 #define INPUT1_MAX          1000      // max ADC1-value while poti at maximum-position (0 - 4095)
 #define INPUT1_DEADBAND     0         // How much of the center position is considered 'center' (100 = values -100 to 100 are considered 0)

@@ -205,7 +205,7 @@ void DMA1_Channel1_IRQHandler(void) {
 		HAL_TIMEx_PWMN_Stop(&htim1, TIM_CHANNEL_3);
 		counter = 0;
 		counterLock = counter;
-	} else if ((adc_buffer.vbat < (int16_t) BAT_MAX_VOLTAGE) && (enableLock) && (speedAvgAbs <= 25)) {
+	} else if ((adc_buffer.vbat < (int16_t) BAT_MAX_VOLTAGE) && (enableLock) && (speedAvgAbs <= 0)) {
 		enable = 1;
 		enableLock = 0;
 
