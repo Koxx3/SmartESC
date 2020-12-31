@@ -45,7 +45,7 @@ good copy exist only on 1.4 Rev have all good but probably not exist today
 - [X] Spin the motor 
   - [X] in commutation mode
   - [X] in sine mode
-  - [X] in FOC mode (speed, voltage & FOC)
+  - [X] in FOC mode (speed, voltage & Torque)
 - [X] Controller the motor with serial link (display / SmartController)
   - [X] Create a new serial link with all data
   - [X] Full-duplex
@@ -62,6 +62,8 @@ good copy exist only on 1.4 Rev have all good but probably not exist today
 - [ ] Communicate with BMS
   - [ ] Half-duplex
   - [ ] Full-duplex
+- [X] Overvolage Protection to prevent a power supply or controller destruction (cut-off mosfets if value reached)
+
 
 
 ## Controller schematics 
